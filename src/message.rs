@@ -9,10 +9,6 @@ pub mod message {
         pub fn new(contents: String) -> Self {
             Message { contents }
         }
-
-        fn length(&self) -> usize {
-            self.contents.len()
-        }
     }
 
     pub trait MessageReceiver {

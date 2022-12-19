@@ -3,7 +3,7 @@ mod unix_read_line;
 
 use std::os::unix::net::UnixStream;
 use std::error::Error;
-use std::io::{Read, Write};
+use std::io::Write;
 use std::thread;
 use message::message::{Message, MessageReceiver};
 use unix_read_line::unix_read_line::ReadLine;
