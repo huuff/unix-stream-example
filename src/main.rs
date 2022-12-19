@@ -1,23 +1,18 @@
 mod message;
+mod unix_read_line;
 
 use std::os::unix::net::UnixStream;
 use std::error::Error;
 use std::io::{Read, Write};
 use std::thread;
 use message::message::{Message, MessageReceiver};
+use unix_read_line::unix_read_line::ReadLine;
 
 fn printer_thread(mut printer_consumer: UnixStream) -> Result<(), Box<dyn Error>> {
     println!("Printer thread started");
     loop {
-        let mut length_buffer = [0u8; 1];
-        printer_consumer.read_exact(&mut length_buffer)?;
-        
-        let length: usize = std::str::from_utf8(&length_buffer)?.parse()?;
-
-        let mut input_buffer = vec![0u8; length];
-        printer_consumer.read_exact(&mut input_buffer)?;
-        let actual_input = String::from_utf8_lossy(&input_buffer);
-        println!("Printer received: {}", actual_input);
+        let input = printer_consumer.read_line();
+        println!("Printer received: {}", input?);
     }
 }
 

@@ -21,7 +21,7 @@ pub mod message {
 
     impl MessageReceiver for UnixStream {
         fn send_message(&mut self, msg: &Message) -> Result<(), std::io::Error> {
-            self.write_all(format!("{}{}", msg.length(), msg.contents).as_bytes())
+            self.write_all(format!("{}\n", msg.contents).as_bytes())
         }
     }
 }
