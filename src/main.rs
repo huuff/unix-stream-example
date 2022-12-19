@@ -1,7 +1,10 @@
+mod message;
+
 use std::os::unix::net::UnixStream;
 use std::error::Error;
 use std::io::{Read, Write};
 use std::thread;
+use message::message::{Message, MessageReceiver};
 
 fn printer_thread(mut printer_consumer: UnixStream) -> Result<(), Box<dyn Error>> {
     println!("Printer thread started");
@@ -25,14 +28,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     let printer_handle = thread::spawn(|| { printer_thread(printer_consumer).unwrap() });
 
     let inputs = vec![
-        "5first",
-        "6second",
-        "5third",
-        "6fourth",
+        Message::new(String::from("first")),
+        Message::new(String::from("second")),
+        Message::new(String::from("third")),
+        Message::new(String::from("fourth")),
     ];
 
     for input in inputs {
-        printer_producer.write_all(input.as_bytes())?;
+        printer_producer.send_message(&input)?;
         printer_producer.flush()?;
         std::thread::sleep(std::time::Duration::from_secs(1));
     }
